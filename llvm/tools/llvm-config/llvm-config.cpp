@@ -355,7 +355,14 @@ int main(int argc, char **argv) {
     ActiveIncludeOption =
         ("-I" + ActiveIncludeDir + " " + "-I" + ActiveObjRoot + "/include");
   } else {
-    ActivePrefix = CurrentExecPrefix;
+
+    auto *ConfigPrefixEnv = std::getenv("LLVM_CONFIG_PREFIX");
+    if (ConfigPrefixEnv != nullptr) {
+      ActivePrefix = ConfigPrefixEnv;
+    } else {
+      ActivePrefix = CurrentExecPrefix;
+    }
+
     {
       SmallString<256> Path(LLVM_INSTALL_INCLUDEDIR);
       sys::fs::make_absolute(ActivePrefix, Path);
